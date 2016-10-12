@@ -90,6 +90,11 @@ def hostname_dns_resolver(hostname, v=False):
 
 
 def ip_dns_resolver(ip):
+    """
+    Asks the DNS for the pointer to the hostname of an ip address
+    :param ip: IPv4 or IPv6
+    :return: string
+    """
 
     ip_rev = dns.reversename.from_address(ip)
     try:
@@ -128,6 +133,12 @@ def main():
         print '\n'.join(map(str, _ips_))
 
     elif args.ips:
+        if '.' in args.ips[0]:
+            ip = args.ips[0].split('.')
+            for i in xrange(len(ip)):
+                if type(ip[i]) is str:
+                    print "Please provide IPv4 or IPv6.\nNot a hostname!"
+                    sys.exit(1)
         print ip_dns_resolver(args.ips[0])
     else:
         print parser.print_usage()
