@@ -23,7 +23,7 @@ www.google.gr
 2a00:1450:4002:800::2003 ---> mil04s22-in-x03.1e100.net
 ```
 
-** Resolve ip address back to host name**
+**Resolve ip address back to host name**
 
 ```bash
 ./improved_DNS_lookup.py -v --ips 2a00:1450:4002:800::2003                                                                                                                                ✓  1385  14:58:06 
