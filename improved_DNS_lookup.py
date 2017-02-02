@@ -14,6 +14,7 @@ Depends on python-dns " yum install python-dns "
 
 import sys
 import argparse
+import ipaddress
 from pprint import pprint
 try:
     import dns.resolver
@@ -117,29 +118,31 @@ def main():
     args = parser.parse_args()
 
     if args.hostname:
-        hostname = args.hostname[0]
-        if args.v:
-            # del _ips_[0]
-            _ips_ = hostname_dns_resolver(hostname, args.v)
-            tmp = []
-            for i in xrange(1, len(_ips_)):
-                if 'NOTFOUND' not in _ips_[i]:
-                    tmp.append(ip_dns_resolver(_ips_[i]))
-            for i in xrange(len(tmp)):
-                _ips_[i+1] = _ips_[i+1] + ' ---> ' + tmp[i]
-            del tmp
-        else:
-            _ips_ = hostname_dns_resolver(hostname)
-        print '\n'.join(map(str, _ips_))
-
+        for hostname in args.hostname:
+            if args.v:
+                # del _ips_[0]
+                _ips_ = hostname_dns_resolver(hostname, args.v)
+                tmp = []
+                for i in xrange(1, len(_ips_)):
+                    if 'NOTFOUND' not in _ips_[i]:
+                        tmp.append(ip_dns_resolver(_ips_[i]))
+                for i in xrange(len(tmp)):
+                    _ips_[i+1] = _ips_[i+1] + ' ---> ' + tmp[i]
+                del tmp
+            else:
+                _ips_ = hostname_dns_resolver(hostname)
+            print '\n'.join(map(str, _ips_))
+            print ''
+            
     elif args.ips:
-        if '.' in args.ips[0]:
-            ip = args.ips[0].split('.')
-            for i in xrange(len(ip)):
-                if type(ip[i]) is str:
-                    print "Please provide IPv4 or IPv6.\nNot a hostname!"
-                    sys.exit(1)
-        print ip_dns_resolver(args.ips[0])
+        for ip in args.ips:
+            print 'IP:',ip
+            try:
+                _ip_ = ipaddress.ip_address(unicode(ip))
+                print ip_dns_resolver(ip)
+            except:
+                print "Please provide IPv4 or IPv6.\nInput invalid!"
+                sys.exit(1)
     else:
         print parser.print_usage()
         sys.exit(1)
